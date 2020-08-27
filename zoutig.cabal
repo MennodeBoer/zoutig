@@ -4,37 +4,43 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: dcf3675127e6de8f9c479dae6c6076e07cdeb73c99cc6eb543c0199a350cf713
+-- hash: 053b95503e99fe2d6d425511fc929706db7e08a3b5219b8956b213e4cbec7b7a
 
 name:           zoutig
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/zoutig#readme>
-homepage:       https://github.com/githubuser/zoutig#readme
-bug-reports:    https://github.com/githubuser/zoutig/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2020 Author name here
+description:    Please see the README on GitHub at <https://github.com/MennodeBoer/zoutig#readme>
+homepage:       https://github.com/MennodeBoer/zoutig#readme
+bug-reports:    https://github.com/MennodeBoer/zoutig/issues
+author:         Menno de Boer
+maintainer:     mennodeboer94@gmail.com
+copyright:      BSD-3
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     README.md
+    ChangeLog.md
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/zoutig
+  location: https://github.com/MennodeBoer/zoutig
 
 library
   exposed-modules:
-      Server
+      Config
+      FutureGame
+      Gateway
+      PastGame
+      Roll
   other-modules:
       Paths_zoutig
   hs-source-dirs:
       src
   build-depends:
       aeson
+    , async
     , attoparsec
-    , base >=4.5 && <5
+    , base >=4.7 && <5
     , base-compat
     , blaze-html
     , blaze-markup
@@ -52,6 +58,7 @@ library
     , servant-client
     , servant-js
     , servant-server
+    , stm
     , string-conversions
     , text
     , time
@@ -68,8 +75,9 @@ executable zoutig-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aeson
+    , async
     , attoparsec
-    , base
+    , base >=4.7 && <5
     , base-compat
     , blaze-html
     , blaze-markup
@@ -87,6 +95,7 @@ executable zoutig-exe
     , servant-client
     , servant-js
     , servant-server
+    , stm
     , string-conversions
     , text
     , time
@@ -105,17 +114,15 @@ test-suite zoutig-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aeson
+    , async
     , attoparsec
-    , base
+    , base >=4.7 && <5
     , base-compat
     , blaze-html
     , blaze-markup
     , bytestring
     , containers
     , directory
-    , hspec
-    , hspec-wai
-    , hspec-wai-json
     , http-client
     , http-media
     , js-jquery
@@ -127,6 +134,7 @@ test-suite zoutig-test
     , servant-client
     , servant-js
     , servant-server
+    , stm
     , string-conversions
     , text
     , time

@@ -9,30 +9,10 @@ var getUser = function(onSuccess, onError)
     });
 }
 
-var getWinner = function(onSuccess, onError)
+var getBoard = function(onSuccess, onError)
 {
   $.ajax(
-    { url: '/winner'
-    , success: onSuccess
-    , error: onError
-    , type: 'GET'
-    });
-}
-
-var getState = function(onSuccess, onError)
-{
-  $.ajax(
-    { url: '/state'
-    , success: onSuccess
-    , error: onError
-    , type: 'GET'
-    });
-}
-
-var getByTimeBoard = function(time, onSuccess, onError)
-{
-  $.ajax(
-    { url: '/' + encodeURIComponent(time) + '/board'
+    { url: '/board'
     , success: onSuccess
     , error: onError
     , type: 'GET'
@@ -49,72 +29,52 @@ var getTurn = function(onSuccess, onError)
     });
 }
 
-var postThrowRoll = function(options, onSuccess, onError)
+var getAlternative = function(onSuccess, onError)
 {
   $.ajax(
-    { url: '/throw/roll' + '?options[]=' + encodeURIComponent(options)
+    { url: '/alternative'
+    , success: onSuccess
+    , error: onError
+    , type: 'GET'
+    });
+}
+
+var getAllowed = function(onSuccess, onError)
+{
+  $.ajax(
+    { url: '/allowed'
+    , success: onSuccess
+    , error: onError
+    , type: 'GET'
+    });
+}
+
+var getRoll = function(onSuccess, onError)
+{
+  $.ajax(
+    { url: '/roll'
+    , success: onSuccess
+    , error: onError
+    , type: 'GET'
+    });
+}
+
+var postMoveByPawn = function(pawn, onSuccess, onError)
+{
+  $.ajax(
+    { url: '/move/' + encodeURIComponent(pawn) + ''
     , success: onSuccess
     , error: onError
     , type: 'POST'
     });
 }
 
-var getThrow = function(onSuccess, onError)
+var postMoveSkip = function(onSuccess, onError)
 {
   $.ajax(
-    { url: '/throw'
+    { url: '/move/skip'
     , success: onSuccess
     , error: onError
-    , type: 'GET'
-    });
-}
-
-var getThrowByNumber = function(number, onSuccess, onError)
-{
-  $.ajax(
-    { url: '/throw/' + encodeURIComponent(number) + ''
-    , success: onSuccess
-    , error: onError
-    , type: 'GET'
-    });
-}
-
-var getThrowErase = function(onSuccess, onError)
-{
-  $.ajax(
-    { url: '/throw/erase'
-    , success: onSuccess
-    , error: onError
-    , type: 'GET'
-    });
-}
-
-var putMove = function(make, onSuccess, onError)
-{
-  $.ajax(
-    { url: '/move' + '?make[]=' + encodeURIComponent(make)
-    , success: onSuccess
-    , error: onError
-    , type: 'PUT'
-    });
-}
-
-var putMoveResurrect = function(onSuccess, onError)
-{
-  $.ajax(
-    { url: '/move/resurrect'
-    , success: onSuccess
-    , error: onError
-    , type: 'PUT'
-    });
-}
-
-var getMoveByAmountAllowed = function(amount, onSuccess, onError)
-{
-  $.ajax(
-    { url: '/move/' + encodeURIComponent(amount) + '/allowed'
-    , success: onSuccess
-    , error: onError
-    , type: 'GET'
+    , type: 'POST'
     });
 }

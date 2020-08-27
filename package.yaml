@@ -1,13 +1,14 @@
 name:                zoutig
 version:             0.1.0.0
-github:              "githubuser/zoutig"
+github:              "MennodeBoer/zoutig"
 license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2020 Author name here"
+author:              "Menno de Boer"
+maintainer:          "mennodeboer94@gmail.com"
+copyright:           "BSD-3"
 
 extra-source-files:
 - README.md
+- ChangeLog.md
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
@@ -16,10 +17,10 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/zoutig#readme>
+description:         Please see the README on GitHub at <https://github.com/MennodeBoer/zoutig#readme>
 
 dependencies:
-- base >= 4.5 && < 5
+- base >= 4.7 && < 5
 - base-compat
 - mtl
 - attoparsec 
@@ -34,16 +35,18 @@ dependencies:
 - blaze-markup
 - blaze-html
 - servant
-- language-javascript
-- servant-js
-- js-jquery
 - servant-server
 - servant-client
+- servant-js
+- stm
+- language-javascript
+- js-jquery
 - wai
 - warp
 - text
 - random
 - containers
+- async
 
 library:
   source-dirs: src
@@ -57,7 +60,6 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - base
     - zoutig
 
 tests:
@@ -69,9 +71,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - base
     - zoutig
-    - hspec
-    - hspec-wai
-    - hspec-wai-json
-    - aeson

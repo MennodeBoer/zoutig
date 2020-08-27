@@ -1,13 +1,13 @@
-getUser(welcomeMsg,console.log);
-window.setInterval(function(){getTurn(updateMessage,console.log)}, 200);
+$.when(getUser(welcomeMsg,console.log)).done(function(){
+window.setInterval(function(){getTurn(updateMessage,console.log)}, 200);})
 
 function welcomeMsg(data)
 {
   $('#body').css("display","block");
-  $('#name').text(data.username);
-  $('#team').text(data.teamcolor);
-  $('#team').css("color",data.teamcolor);
-  if(data.time)
+  $('#name').text(data.uName);
+  $('#team').text(data.uTeam);
+  $('#team').css("color",data.uTeam);
+  if(data.uTime == "Future")
   {
     $('#period').text("");
     $('#time').text("Future");
@@ -33,9 +33,9 @@ function printBoard(data)
     }
     else 
     {
-      $('#'+i).css("background-color",data[i].team);   
+      $('#'+i).css("background-color",data[i].pTeam);   
       $('#'+i).css("transform",getDeg(i));    
-      $('#'+i).text(data[i].number);
+      $('#'+i).text(data[i].pNumber);
     }
   }
 }
@@ -50,7 +50,7 @@ function checkMatches(data)
     }
     else
     {
-      $('#dummy').css("background-color",data[i].team)
+      $('#dummy').css("background-color",data[i].pTeam)
       if ($('#dummy').css("background-color") == $('#'+i).css("background-color"))
       {
          $('#'+i).css("box-shadow","0 0 5pt 2pt yellow");
@@ -179,10 +179,7 @@ function getDeg(i)
 }
 
 function updateMessage(data)
-{  
-  $.when(getWinner(checkWinner,console.log),
-  getByTimeBoard(!toBool($('#toggle').prop("innerText")),printBoard, console.log),
-  getByTimeBoard(toBool($('#toggle').prop("innerText")),checkMatches, console.log)).done(function(){
+{
   if($('#toggle').prop("innerText") == $('#time').text())
   {
     $('#period').css("display","none");  
@@ -192,43 +189,52 @@ function updateMessage(data)
     $('#button3').css("display","none");
     $('#button4').css("display","none");
     $('#throw').css("display","none");  
-  }
-  else if ($('#time').text() == "Past")
-  {
-    $('#period').css("display","inline");  
-    if (data)
-    {  
-      getThrow(checkThrow,console.log); 
-    }
-    else
-    {
-      $('#message').text('It is not your turn');
-      $('#button1').css("display","none");
-      $('#button2').css("display","none");
-      $('#button3').css("display","none");
-      $('#button4').css("display","none");
-      $('#throw').css("display","none");  
-    }
+    getAlternative(printBoard,console.log);
+    getBoard(checkMatches,console.log);
   }
   else
   {
-    if (data)
+    getBoard(printBoard,console.log)
+    getAlternative(checkMatches,console.log);
+    if ($('#time').text() == "Past")
     {
-      $('#throw').css("display","none");  
-      $('#period').css("display","none");  
-      $('#message').text('It was your turn! What did you do?');
-      getMoveAllowed(0,updateButtonsFuture,console.log);
-      $('#button4').css("display","inline-block");
+      $('#period').css("display","inline");  
+      if (data)
+      {  
+        $.when(getAllowed(updateButtons,console.log)); 
+      }
+      else
+      {
+        $('#message').text('It is not your turn');
+        $('#button1').css("display","none");
+        $('#button2').css("display","none");
+        $('#button3').css("display","none");
+        $('#button4').css("display","none");
+        $('#throw').css("display","none");  
+     }
     }
     else
     {
-      $('#period').css("display","none");  
-      $('#button1').css("display","none");
-      $('#button2').css("display","none");
-      $('#button3').css("display","none");
-      $('#button4').css("display","none");
+      if (data)
+      {
+       $('#throw').css("display","none");  
+       $('#period').css("display","none");  
+       $('#message').text('It was your turn! What did you do?');
+       $.when(getAllowed(updateButtonsFuture,console.log));
+       $('#button4').css("display","inline-block");
+      }
+      else
+      {       
+        $('#throw').css("display","none");  
+        $('#message').text('It was not your turn.');
+        $('#period').css("display","none");  
+        $('#button1').css("display","none");
+        $('#button2').css("display","none");
+        $('#button3').css("display","none");
+        $('#button4').css("display","none");
+      }
     }
-  }})
+  }
 }
 
 function updateButtonsFuture(data)
@@ -239,26 +245,9 @@ function updateButtonsFuture(data)
   }
 }
 
-function checkThrow(data)
-{
-  if(data == 0)
-  {
-    postThrowRoll([1,2,3,4,5,6],null,console.log);  
-  }
-  else
-  {
-    $('#throw').text(data);
-    getMoveAllowed(data,updateButtons,console.log);  
-  }
-}
-
 function updateButtons(data)
 {  
-  if(data.length==0)
-  {    
-    eraseThrow(null,console.log);
-    postThrowRoll([6],null,console.log);
-  }
+  getRoll(function(data){$('#throw').text(data)},console.log);
   $('#message').text('It is your turn! You rolled a ');
   $('#throw').css("display","inline");
   for(var i = 0; i < data.length; i++)
@@ -268,34 +257,21 @@ function updateButtons(data)
   $('#button4').css("display","inline-block");  
 }
 
-
 function makeMove(n)
 {  
-  if ($('#time').text() == "Past")
-  {
+    $.when(postMoveByPawn(n,null,console.log))
     $('#button1').css("display","none");
     $('#button2').css("display","none");
     $('#button3').css("display","none");
     $('#button4').css("display","none");
-    $('#throw').css("display","none");
-    $.when(eraseThrow(null,console.log)).done(function(){
-    var move = $('#throw').text();
-    putMove([move,n],null,console.log);})
-  }
-  else 
-  {
-    getThrowByNumber(n,
-      function(data)
-      {
-        $('#button1').css("display","none");
-        $('#button2').css("display","none");
-        $('#button3').css("display","none");
-        $('#button4').css("display","none");
-        $('#message').text('It was not your turn. Your last throw was ' + data + '.');
-        putMove([data,n],null,console.log);
-      },
-      console.log);
-  }
+    if ($('#time').text() == "Past")
+    {
+      $('#throw').css("display","none");
+    }
+    else
+    {
+      $('#message').text('It was not your turn.');
+    };
 }
 
 function skip()
@@ -304,17 +280,15 @@ function skip()
   $('#button2').css("display","none");
   $('#button3').css("display","none");
   $('#button4').css("display","none");  
-  console.log($('#time').text());
   if ($('#time').text() == "Past")
   {
     $('#throw').css("display","none");
-    eraseThrow(null,console.log);
   }
   else
   {
     $('#message').text('It was not your turne. You skipped.');
   }
-  putMove([], null, console.log);
+  postMoveSkip(null, console.log);
 }
 
 function swap()
