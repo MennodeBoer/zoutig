@@ -1,0 +1,136 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: dcf3675127e6de8f9c479dae6c6076e07cdeb73c99cc6eb543c0199a350cf713
+
+name:           zoutig
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/zoutig#readme>
+homepage:       https://github.com/githubuser/zoutig#readme
+bug-reports:    https://github.com/githubuser/zoutig/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2020 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/zoutig
+
+library
+  exposed-modules:
+      Server
+  other-modules:
+      Paths_zoutig
+  hs-source-dirs:
+      src
+  build-depends:
+      aeson
+    , attoparsec
+    , base >=4.5 && <5
+    , base-compat
+    , blaze-html
+    , blaze-markup
+    , bytestring
+    , containers
+    , directory
+    , http-client
+    , http-media
+    , js-jquery
+    , language-javascript
+    , lucid
+    , mtl
+    , random
+    , servant
+    , servant-client
+    , servant-js
+    , servant-server
+    , string-conversions
+    , text
+    , time
+    , wai
+    , warp
+  default-language: Haskell2010
+
+executable zoutig-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_zoutig
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , attoparsec
+    , base
+    , base-compat
+    , blaze-html
+    , blaze-markup
+    , bytestring
+    , containers
+    , directory
+    , http-client
+    , http-media
+    , js-jquery
+    , language-javascript
+    , lucid
+    , mtl
+    , random
+    , servant
+    , servant-client
+    , servant-js
+    , servant-server
+    , string-conversions
+    , text
+    , time
+    , wai
+    , warp
+    , zoutig
+  default-language: Haskell2010
+
+test-suite zoutig-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_zoutig
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , attoparsec
+    , base
+    , base-compat
+    , blaze-html
+    , blaze-markup
+    , bytestring
+    , containers
+    , directory
+    , hspec
+    , hspec-wai
+    , hspec-wai-json
+    , http-client
+    , http-media
+    , js-jquery
+    , language-javascript
+    , lucid
+    , mtl
+    , random
+    , servant
+    , servant-client
+    , servant-js
+    , servant-server
+    , string-conversions
+    , text
+    , time
+    , wai
+    , warp
+    , zoutig
+  default-language: Haskell2010

@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Zoutig</title>
+    <link rel="stylesheet" type="text/css" href="omg.css">
+  </head>
+  <body id="body" style="display:none">
+    <div id="dummy" style="display:none;"></div>
+    <div style="width:200%">
+      <span >Welcome </span>
+      <span id="name"></span>
+      <span>! You are on team </span>
+      <span id="team"></span>
+      <span>, and play from the </span>
+      <span id="time"></span>
+      <span>. Switch view to:</span>
+      <button type="button" id="toggle" onclick="swap()"></button>
+    </div>
+    <div Class="div">
+      <span id="message"></span><span id="throw"></span><span id="period">.</span>
+      <button type="button" id="button1" Class="button none" onclick="makeMove(this.innerText)">1</button>
+      <button type="button" id="button2" Class="button none" onclick="makeMove(this.innerText)">2</button>
+      <button type="button" id="button3" Class="button none" onclick="makeMove(this.innerText)">3</button>
+      <button type="button" id="button4" Class="button none" onclick="skip()">skip</button>
+    </div>
+    <div class="wrapper">
+      <div class="board-part" id="top-left">
+        <table>
+          <tr>
+            <td>
+              <div class="square left" id=23></div>
+            </td>
+            <td><div class="square" id=24></div>
+            </td>
+            <td><div class="square right" id=25></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="square left" id=22></div>
+            </td>
+            <td><div class="square" id=43></div>
+            </td>
+            <td><div class="square right" id=26></div>
+            </td>
+          </tr><tr>
+            <td>
+              <div class="square left" id=21></div>
+            </td>
+            <td><div class="square" id=44></div>
+            </td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <div class="square" id=45></div>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+      <div class="board-part">
+        <table>
+          <tr>
+            <td>
+              <div class="square left" id=29></div>
+            </td>
+            <td><div class="square" id=30></div>
+            </td>
+            <td><div class="square right" id=1></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="square left" id=28></div>
+            </td>
+            <td><div class="square" id=31></div>
+            </td>
+            <td><div class="square right" id=2></div>
+            </td>
+          </tr><tr>
+            <td>
+              <div class="square left" id=27></div>
+            </td>
+            <td><div class="square" id=32></div>
+            </td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <div class="square" id=33></div>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+      <div class="board-part" id="top-right">
+        <table>
+          <tr>
+            <td>
+              <div class="square left" id=5></div>
+            </td>
+            <td><div class="square" id=6></div>
+            </td>
+            <td><div class="square right" id=7></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="square left" id=4></div>
+            </td>
+            <td><div class="square" id=34></div>
+            </td>
+            <td><div class="square right" id=8></div>
+            </td>
+          </tr><tr>
+            <td>
+              <div class="square left" id=3></div>
+            </td>
+            <td><div class="square" id=35></div>
+            </td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <div class="square" id=36></div>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+      <div class="board-part bottom" id="bottom-left">
+        <table>
+          <tr>
+            <td>
+              <div class="square left" id=17></div>
+            </td>
+            <td><div class="square" id=18></div>
+            </td>
+            <td><div class="square right" id=19></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="square left" id=16></div>
+            </td>
+            <td><div class="square" id=40></div>
+            </td>
+            <td><div class="square right" id=20></div>
+            </td>
+          </tr><tr>
+            <td>
+              <div class="square left" id=15></div>
+            </td>
+            <td><div class="square" id=41></div>
+            </td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <div class="square" id=42></div>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+      <div class="board-part bottom" id="bottom-right">
+        <table>
+          <tr>
+            <td>
+              <div class="square left" id=11></div>
+            </td>
+            <td><div class="square" id=12></div>
+            </td>
+            <td><div class="square right" id=13></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="square left" id=10></div>
+            </td>
+            <td><div class="square" id=37></div>
+            </td>
+            <td><div class="square right" id=14></div>
+            </td>
+          </tr><tr>
+            <td>
+              <div class="square left" id=9></div>
+            </td>
+            <td><div class="square" id=38></div>
+            </td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <div class="square" id=39></div>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  <script type="text/javascript" src="/jq.js"></script>
+  <script type="text/javascript" src="/apialt.js"></script>
+  <script type="text/javascript" src="/ui.js"></script>
+
+
+  </body>

@@ -1,0 +1,77 @@
+name:                zoutig
+version:             0.1.0.0
+github:              "githubuser/zoutig"
+license:             BSD3
+author:              "Author name here"
+maintainer:          "example@example.com"
+copyright:           "2020 Author name here"
+
+extra-source-files:
+- README.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/githubuser/zoutig#readme>
+
+dependencies:
+- base >= 4.5 && < 5
+- base-compat
+- mtl
+- attoparsec 
+- bytestring
+- string-conversions
+- time
+- http-media
+- http-client
+- directory
+- lucid
+- aeson
+- blaze-markup
+- blaze-html
+- servant
+- language-javascript
+- servant-js
+- js-jquery
+- servant-server
+- servant-client
+- wai
+- warp
+- text
+- random
+- containers
+
+library:
+  source-dirs: src
+
+executables:
+  zoutig-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - base
+    - zoutig
+
+tests:
+  zoutig-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - base
+    - zoutig
+    - hspec
+    - hspec-wai
+    - hspec-wai-json
+    - aeson
