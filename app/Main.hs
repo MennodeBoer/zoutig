@@ -14,6 +14,7 @@ import Gateway
 import Roll
 import PastGame
 import FutureGame
+import Security
 
 main :: IO ()
 main = do manager1 <- newManager defaultManagerSettings

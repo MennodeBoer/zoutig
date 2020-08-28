@@ -1,5 +1,4 @@
 {-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -36,6 +35,7 @@ import           Debug.Trace
 import           Control.Concurrent
 import           Control.Monad
 import           Control.Monad.Except
+import           Control.Monad.Trans.Reader
 
 import qualified Data.Map                   as Map
 import qualified Data.Text as T (Text)
@@ -59,84 +59,48 @@ type GatewayApi = "user" :> Get '[JSON] User
 gatewayApi :: Proxy GatewayApi
 gatewayApi = Proxy
 
-type SecureApi = BasicAuth "Gepaste inlog" Player :> GatewayApi
-                 :<|> Raw
-
-secureApi :: Proxy SecureApi
-secureApi = Proxy
-
-pswds :: [ByteString]
-pswds = fmap (pack . concatMap show) [seeds !! x | key <- keys , let x = read $ concatMap show key]
-  where seeds = permutations [0..9]
-        keys = Data.List.take 10 $ permutations [5,2,3,7,6,0]
-
-linkPswds :: Map.Map Player ByteString
-linkPswds = Map.fromList $ zip names pswds
-
-authCheck :: BasicAuthCheck Player
-authCheck =  BasicAuthCheck $ \basicAuthData ->
-  let
-    p = decodeUtf8 (basicAuthPassword basicAuthData)
-    u = basicAuthUsername basicAuthData
-  in
-    case Map.lookup u namesByte of
-      Nothing -> return NoSuchUser
-      Just u' -> case Map.lookup u' linkPswds of
-                  Nothing -> return NoSuchUser
-                  Just password -> if decodeUtf8 password == p
-                                   then return (Authorized u')
-                                   else return BadPassword
-
-
-basicAuthServerContext :: Context (BasicAuthCheck Player ': '[])
-basicAuthServerContext = authCheck :. EmptyContext
-
--------------------------------------------------------------------------------
--- Server
--------------------------------------------------------------------------------
-
 server :: Manager -> Player -> Server GatewayApi
 server manager player =
   let
     user = fromJust $ Map.lookup player userByName
   in
     return user
-    :<|> getBoardServer user manager
-    :<|> getTurnServer user manager
-    :<|> getAlternativeServer user manager
-    :<|> getAllowedServer user manager
-    :<|> getRollServer user manager
-    :<|> postMoveServer user manager 
-    :<|> postSkipServer user manager
+    :<|> getBoardServer manager user
+    :<|> getTurnServer manager user
+    :<|> getAlternativeServer manager user
+    :<|> getAllowedServer manager user
+    :<|> getRollServer manager user
+    :<|> postMoveServer manager user 
+    :<|> postSkipServer manager user
 
 
-getBoardServer :: User -> Manager -> Handler Board
-getBoardServer user manager = do let port = timeToPort $ uTime user
+getBoardServer :: Manager -> User -> Handler Board
+getBoardServer manager user = do let port = timeToPort $ uTime user
                                      url = BaseUrl Http "localhost" port "/state"
                                  state <- liftIO $ runClientM (client getApi) (mkClientEnv manager url)
                                  either microserviceError (return . getBoard) state
 
-getTurnServer :: User -> Manager -> Handler Bool
-getTurnServer user manager = do let port = timeToPort $ uTime user
+getTurnServer :: Manager -> User -> Handler Bool
+getTurnServer manager user = do let port = timeToPort $ uTime user
                                     url = BaseUrl Http "localhost" port "/state"
                                 state <- liftIO $ runClientM (client getApi) (mkClientEnv manager url)
                                 either microserviceError (return . (== uTeam user) . gsTurn) state
 
-getAlternativeServer :: User -> Manager -> Handler Board
-getAlternativeServer user manager = do let port = timeToPort $ swapTime $ uTime user
+getAlternativeServer :: Manager -> User -> Handler Board
+getAlternativeServer manager user = do let port = timeToPort $ swapTime $ uTime user
                                            url = BaseUrl Http "localhost" port "/state"
                                        state <- liftIO $ runClientM (client getApi) (mkClientEnv manager url)
                                        either microserviceError (return . getBoard) state
 
-getAllowedServer :: User -> Manager -> Handler [Int]
-getAllowedServer user manager = do let port = timeToPort $ uTime user
+getAllowedServer :: Manager -> User -> Handler [Int]
+getAllowedServer manager user = do let port = timeToPort $ uTime user
                                        team = uTeam user
                                        url = BaseUrl Http "localhost" port ("/allowed/" ++ show team)
                                    allowed <- liftIO $ runClientM (client getApi) (mkClientEnv manager url)
                                    either microserviceError return allowed
 
-getRollServer :: User -> Manager -> Handler Int
-getRollServer user manager = do let team = uTeam user
+getRollServer :: Manager -> User -> Handler Int
+getRollServer manager user = do let team = uTeam user
                                     urlAllowed = BaseUrl Http "localhost" (timeToPort Past) ("/allowed/" ++ show team)
                                 allowed <- liftIO $ runClientM (client getApi :: ClientM [Int]) (mkClientEnv manager urlAllowed)
                                 case allowed of 
@@ -148,20 +112,22 @@ getRollServer user manager = do let team = uTeam user
                                                  roll <- liftIO $ runClientM (client getApi) (mkClientEnv manager url)
                                                  either microserviceError return roll
 
-postMoveServer :: User -> Manager -> Int -> Handler String
-postMoveServer user manager pawn = do let port = timeToPort $ uTime user
+postMoveServer :: Manager -> User -> Int -> Handler String
+postMoveServer manager user pawn = do let port = timeToPort $ uTime user
                                           team = uTeam user
                                           url = BaseUrl Http "localhost" port ("/move/" ++ show team ++ "/" ++ show pawn)
                                       state <- liftIO $ runClientM (client postApi) (mkClientEnv manager url)
                                       either microserviceError return state
 
-postSkipServer :: User -> Manager -> Handler String
-postSkipServer user manager = do let port = timeToPort $ uTime user
+postSkipServer :: Manager -> User -> Handler String
+postSkipServer manager user = do let port = timeToPort $ uTime user
                                      team = uTeam user
                                      url = BaseUrl Http "localhost" port "/move/skip"
                                  state <- liftIO $ runClientM (client postApi) (mkClientEnv manager url)
                                  either microserviceError return state
 
+
+-- JQuery generation
 
 apiJS1 :: T.Text
 apiJS1 = jsForAPI gatewayApi jquery
@@ -171,10 +137,3 @@ writeJSFiles = do
   T.writeFile "static/api.js" apiJS1
   jq <- Language.Javascript.JQuery.file >>= T.readFile
   T.writeFile "static/jq.js" jq
-
-
-secureServer :: Manager -> Server SecureApi
-secureServer manager = server manager :<|> serveDirectoryFileServer "static"
-
-gatewayApp :: Manager -> Application
-gatewayApp manager = serveWithContext secureApi basicAuthServerContext (secureServer manager)

@@ -47,6 +47,7 @@ dependencies:
 - random
 - containers
 - async
+- transformers
 
 library:
   source-dirs: src

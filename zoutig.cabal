@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 053b95503e99fe2d6d425511fc929706db7e08a3b5219b8956b213e4cbec7b7a
+-- hash: 6f8c06ebad09966187ba32d1bb666541b43154271a1f09cade8eacdfa8704798
 
 name:           zoutig
 version:        0.1.0.0
@@ -32,6 +32,7 @@ library
       Gateway
       PastGame
       Roll
+      Security
   other-modules:
       Paths_zoutig
   hs-source-dirs:
@@ -62,6 +63,7 @@ library
     , string-conversions
     , text
     , time
+    , transformers
     , wai
     , warp
   default-language: Haskell2010
@@ -99,6 +101,7 @@ executable zoutig-exe
     , string-conversions
     , text
     , time
+    , transformers
     , wai
     , warp
     , zoutig
@@ -138,6 +141,7 @@ test-suite zoutig-test
     , string-conversions
     , text
     , time
+    , transformers
     , wai
     , warp
     , zoutig
